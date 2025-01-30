@@ -1,0 +1,124 @@
+/* Chat Container */
+.chat-container {
+    width: 100%;
+    max-width: 800px; /* Set a max width to make the chat more manageable */
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* Adjust the height */
+    overflow: hidden;
+  }
+  
+  /* Chat History */
+  .chat-history {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 10px; /* Prevent scrollbar from overlapping messages */
+  }
+  
+  .chat-history .message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #e0e0e0;
+    max-width: 80%;
+    word-wrap: break-word;
+    position: relative;
+  }
+  
+  .chat-history .message.sent {
+    background-color: #4caf50;
+    color: #fff;
+    margin-left: auto; /* Align sent messages to the right */
+  }
+  
+  .chat-history .message.received {
+    background-color: #f1f1f1;
+    color: #333;
+    margin-right: auto; /* Align received messages to the left */
+  }
+  
+  .chat-history .message small {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    text-align: right;
+  }
+  
+  /* Chat Input Container */
+  .chat-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  
+  .chat-input-container textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    resize: none; /* Prevent resizing */
+    min-height: 50px;
+    box-sizing: border-box;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .chat-input-container textarea:focus {
+    border-color: #4caf50;
+  }
+  
+  .chat-input-container button {
+    padding: 12px 20px;
+    background-color: #4caf50;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+  }
+  
+  .chat-input-container button:hover {
+    background-color: #45a049;
+  }
+  
+  .chat-input-container button:disabled {
+    background-color: #aaa;
+    cursor: not-allowed;
+  }
+  
+  /* Error Message */
+  .error {
+    color: red;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 600px) {
+    .chat-container {
+      height: 90vh; /* Adjust for mobile screens */
+    }
+  
+    .chat-history {
+      padding-right: 5px;
+    }
+  
+    .chat-history .message {
+      max-width: 90%;
+    }
+  
+    .chat-input-container button {
+      padding: 10px 15px;
+    }
+  }

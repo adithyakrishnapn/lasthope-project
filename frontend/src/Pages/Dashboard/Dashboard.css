@@ -1,0 +1,88 @@
+/* Scoped styles for Dashboard page only */
+.dashboardPage {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to bottom right, #f0f4ff, #d1eaff);
+    color: #333;
+    min-height: 100vh;
+    padding: 20px;
+  }
+  
+  .dashboardPage .container-fluid {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    gap: 20px;
+  }
+  
+  /* Sidebar (Left Panel) styles */
+  .dashboardPage .dashLeft {
+    background: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    flex: 1;
+    max-width: 300px;
+  }
+  
+  .dashboardPage .dashLeft h1 {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #1f9d00;
+  }
+  
+  .dashboardPage .dashLeft h5 {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #555;
+  }
+  
+  .dashboardPage .dashLeft button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px 0;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #00c635;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .dashboardPage .dashLeft button:hover {
+    background-color: #24b300;
+    transform: translateY(-2px);
+  }
+  
+  .dashboardPage .dashLeft button:active {
+    transform: translateY(0);
+  }
+  
+  /* Main Content (Right Panel) styles */
+  .dashboardPage .dashRight {
+    flex: 3;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .dashboardPage .dashRight h2 {
+    font-size: 2rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+    .dashboardPage .container-fluid {
+      flex-direction: column;
+    }
+  
+    .dashboardPage .dashLeft {
+      max-width: 100%;
+      margin-bottom: 20px;
+    }
+  }
+  

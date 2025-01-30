@@ -1,0 +1,81 @@
+/* Login.css */
+
+/* Styling for the login form container */
+.loginForm {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  margin: 20px auto;
+}
+
+/* Input field styling */
+.loginForm input[type="email"],
+.loginForm input[type="password"],
+.loginForm input[type="submit"],
+.loginForm button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+/* Specific styling for the email and password fields */
+.loginForm input[type="email"],
+.loginForm input[type="password"] {
+  padding-left: 30px;
+}
+
+/* Placeholder styling */
+.loginForm input[type="email"]::placeholder,
+.loginForm input[type="password"]::placeholder {
+  color: #aaa;
+}
+
+/* Styling for the submit button */
+.loginForm input[type="submit"] {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.loginForm input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the Google login button */
+.loginForm button.google-login {
+  background-color: #4285f4;  /* Google blue color */
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px; /* Space between icon and text */
+}
+
+.loginForm button.google-login:hover {
+  background-color: #357ae8;  /* Darker blue on hover */
+}
+
+.loginForm button.google-login .google-icon {
+  font-size: 20px; /* Adjust icon size */
+}
+
+/* Separator line */
+.loginForm hr {
+  margin: 20px 0;
+}

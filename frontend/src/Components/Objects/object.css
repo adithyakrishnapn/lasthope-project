@@ -1,0 +1,79 @@
+/* Ensure we're targeting only the Objects component */
+.objects-container {
+  padding: 2rem;
+}
+
+.objects-card {
+  height: 350px;
+  background-color: #f8f9fa; /* Light grey background */
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  overflow: hidden; /* Ensures no overflow */
+}
+
+.objects-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.objects-card-img {
+  width: 100%;
+  height: 200px; /* Set height to control image size */
+  object-fit: cover; /* Ensures the image covers the area without distortion */
+  object-position: center; /* Keeps the image centered */
+}
+
+.objects-card-body {
+  padding: 1rem;
+}
+
+.objects-card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.objects-card-text {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.objects-btn-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.objects-btn {
+  font-size: 0.9rem;
+}
+
+.objects-btn-primary {
+  background-color: #007bff;
+}
+
+.objects-btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.objects-btn-secondary {
+  background-color: #6c757d;
+}
+
+.objects-btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.objects-view-more {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.objects-btn-container button{
+  background-color: rgb(0, 0, 0);
+  color: white;
+}
+
+.objects-btn-container button:hover{
+  background-color: rgb(71, 71, 71);
+  color: white;
+}

@@ -1,0 +1,135 @@
+/* General Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Message List Container */
+.message-list {
+  display: flex;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.messages {
+  flex: 1;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  overflow-y: auto;
+  height: 500px; /* Fixed height for scrollable message list */
+}
+
+.message-item {
+  background-color: #fafafa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.message-item:hover {
+  background-color: #f1f1f1;
+}
+
+.message-item h3 {
+  font-size: 18px;
+  color: #333;
+}
+
+.message-item p {
+  font-size: 14px;
+  color: #777;
+  margin-top: 5px;
+}
+
+/* Chat Section */
+.chat-container {
+  flex: 2;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  height: 500px; /* Fixed height for chat view */
+  overflow-y: auto;
+}
+
+.chat-container h2 {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.chat-container .message {
+  margin-bottom: 20px;
+}
+
+.chat-container .message .sender {
+  font-weight: bold;
+  color: #333;
+}
+
+.chat-container .message .text {
+  font-size: 16px;
+  color: #555;
+  margin-top: 5px;
+}
+
+.loading {
+  font-size: 24px;
+  color: #999;
+  text-align: center;
+}
+
+/* Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .message-list {
+    flex-direction: column-reverse; /* Reverse order on mobile */
+  }
+
+  .chat-container {
+    order: 1; /* Chat comes first on mobile */
+    width: 100%;
+    margin-bottom: 20px;
+    height: auto; /* Allow chat to grow based on content */
+  }
+
+  .messages {
+    order: 2; /* Messages come second on mobile */
+    width: 100%;
+    height: auto;
+  }
+
+  .message-item {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  /* Optional: Adjust font sizes for better mobile readability */
+  .message-item h3 {
+    font-size: 16px;
+  }
+
+  .message-item p {
+    font-size: 12px;
+  }
+
+  .chat-container h2 {
+    font-size: 20px;
+  }
+
+  .chat-container .message .text {
+    font-size: 14px;
+  }
+}
