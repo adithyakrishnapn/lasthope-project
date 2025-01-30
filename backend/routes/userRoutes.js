@@ -44,22 +44,6 @@ const lostItemSchema = new mongoose.Schema(
 
 const LostItem = mongoose.model('LostItem', lostItemSchema);
 
-// Message Schema for communication between users about lost items
-const messageSchema = new mongoose.Schema({
-  senderEmail: String,
-  receiverEmail: String,
-  itemName: String,
-  itemId: { type: mongoose.Schema.Types.ObjectId, ref: 'LostItem' }, // Add itemId as a reference to the LostItem model
-  messages: [
-    {
-      sender: String,
-      message: String,
-      timestamp: { type: Date, default: Date.now },
-    },
-  ],
-});
-
-const Message = mongoose.model('Message', messageSchema);
 
 
 // Route to save a user

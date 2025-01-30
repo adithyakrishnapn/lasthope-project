@@ -14,12 +14,6 @@ function Chat({ itemId, senderEmail, receiverEmail }) {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
     useEffect(() => {
-        console.log('Current User:', currentUser);
-        console.log('Sender Email:', senderEmail);
-        console.log('Receiver Email:', receiverEmail);
-    }, [currentUser, senderEmail, receiverEmail]);
-
-    useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [messages]);
 
@@ -29,43 +23,58 @@ function Chat({ itemId, senderEmail, receiverEmail }) {
             fetchItemDetails();
             fetchMessages();
         }
-        return () => socket.current?.disconnect();
+        return () => {
+            if (socket.current) {
+                socket.current.disconnect();
+            }
+        };
     }, [itemId, currentUser?.email]);
 
     const initializeSocket = () => {
-        if (socket.current) {
-            socket.current.disconnect();
-        }
-    
         socket.current = io(process.env.REACT_APP_API_BASE_URL, {
             transports: ['websocket', 'polling'],
             timeout: 10000,
-            auth: { userEmail: currentUser?.email }
+            reconnectionAttempts: 5,
         });
-    
+
         socket.current.on('connect', () => {
-            console.log('Socket connected successfully');
+            console.log('✅ Socket connected:', socket.current.id);
             setSocketConnected(true);
-            socket.current.emit('joinRoom', {
-                itemId: itemId.toString(),
-                senderEmail: currentUser.email,
-                receiverEmail: currentUser.email === senderEmail ? receiverEmail : senderEmail
+
+            // Create a unique room ID that will be the same for both sender and receiver
+            const participants = [currentUser.email, currentUser.email === senderEmail ? receiverEmail : senderEmail].sort();
+            const roomId = `${itemId}-${participants[0]}-${participants[1]}`;
+            
+            socket.current.emit('joinRoom', { roomId });
+            console.log(`📌 Joining room: ${roomId}`);
+        });
+
+        socket.current.on('receiveMessage', (newMessage) => {
+            console.log('📩 New message received:', newMessage);
+            setMessages(prevMessages => {
+                // Check if message already exists to prevent duplicates
+                const messageExists = prevMessages.some(msg => 
+                    msg.timestamp === newMessage.timestamp && 
+                    msg.senderEmail === newMessage.senderEmail
+                );
+                
+                if (!messageExists) {
+                    return [...prevMessages, newMessage];
+                }
+                return prevMessages;
             });
         });
-    
-        socket.current.on('connect_error', (err) => {
-            console.error('Socket connection error:', err);
-            setError('Connection error. Please try refreshing the page.');
+
+        socket.current.on('disconnect', (reason) => {
+            console.log('⚠️ Socket disconnected:', reason);
             setSocketConnected(false);
         });
-    
-        // Listen for new messages in real-time
-        socket.current.on('receiveMessage', (message) => {
-            console.log('Received message:', message);
-            setMessages(prev => [...prev, message]); // Update chat immediately
+
+        socket.current.on('connect_error', (err) => {
+            console.error('❌ Connection error:', err.message);
+            setSocketConnected(false);
         });
     };
-    
 
     const fetchItemDetails = async () => {
         try {
@@ -95,30 +104,31 @@ function Chat({ itemId, senderEmail, receiverEmail }) {
 
     const handleSendMessage = async (e) => {
         e.preventDefault();
-        setError('');
-    
         if (!newMessage.trim() || !socketConnected) return;
-    
+
+        const participants = [currentUser.email, currentUser.email === senderEmail ? receiverEmail : senderEmail].sort();
+        const roomId = `${itemId}-${participants[0]}-${participants[1]}`;
+
         const messageData = {
             senderEmail: currentUser.email,
             receiverEmail: currentUser.email === senderEmail ? receiverEmail : senderEmail,
             itemId: itemId.toString(),
             message: newMessage.trim(),
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
+            roomId
         };
-    
+
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/create-chat`, messageData);
             if (response.status === 201) {
-                setNewMessage(''); // Clear input field
+                socket.current.emit('sendMessage', messageData);
+                setNewMessage('');
             }
         } catch (err) {
             console.error('Error sending message:', err);
             setError('Failed to send message. Please try again.');
         }
     };
-    
-    
 
     return (
         <div className="chat-container">
@@ -130,7 +140,7 @@ function Chat({ itemId, senderEmail, receiverEmail }) {
                 <div className="messages">
                     {messages.length ? (
                         messages.map((msg, index) => (
-                            <div key={index} className={`message ${msg.senderEmail === currentUser.email ? 'sent' : 'received'}`}>
+                            <div key={`${msg.timestamp}-${index}`} className={`message ${msg.senderEmail === currentUser.email ? 'sent' : 'received'}`}>
                                 <p>{msg.message}</p>
                                 <small>{new Date(msg.timestamp).toLocaleString()}</small>
                             </div>
@@ -149,7 +159,11 @@ function Chat({ itemId, senderEmail, receiverEmail }) {
                     className="chat-input"
                     placeholder="Type your message..."
                 />
-                <button type="submit" className={`send-button ${!newMessage.trim() || !socketConnected ? 'disabled' : 'active'}`} disabled={!newMessage.trim() || !socketConnected}>
+                <button 
+                    type="submit" 
+                    className={`send-button ${!newMessage.trim() || !socketConnected ? 'disabled' : 'active'}`} 
+                    disabled={!newMessage.trim() || !socketConnected}
+                >
                     Send
                 </button>
             </form>

@@ -19,7 +19,7 @@ app.use(cors());
 // Initialize Socket.IO
 const io = new Server(server, {
     cors: {
-        origin: "*", // Adjust origin to be more specific in production for security
+        origin: "*",
         methods: ["GET", "POST"],
     },
 });
@@ -42,20 +42,21 @@ app.use("/api", userRouter);
 
 // Socket.IO functionality
 // In your backend server.js
+// In your server.js
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("joinRoom", ({ itemId, senderEmail, receiverEmail }) => {
-        if (itemId) {
-            const roomId = itemId.toString();
+    socket.on("joinRoom", ({ roomId }) => {
+        if (roomId) {
             console.log(`User ${socket.id} joined room: ${roomId}`);
             socket.join(roomId);
+            socket.emit("roomJoined", { roomId });
         }
     });
 
     socket.on("sendMessage", async (messageData) => {
-        const { itemId, senderEmail, receiverEmail, message, timestamp } = messageData;
-    
+        const { itemId, senderEmail, receiverEmail, message, timestamp, roomId } = messageData;
+
         try {
             let chat = await Chat.findOne({
                 itemId: itemId,
@@ -64,7 +65,7 @@ io.on("connection", (socket) => {
                     { senderEmail: receiverEmail, receiverEmail: senderEmail }
                 ]
             });
-    
+
             if (!chat) {
                 chat = new Chat({
                     senderEmail,
@@ -73,25 +74,29 @@ io.on("connection", (socket) => {
                     messages: []
                 });
             }
-    
+
             const newMessage = {
-                senderEmail, // Stores who sent the message
-                message: message || messageData.initialMessage,
+                senderEmail,
+                message,
                 timestamp: new Date(timestamp)
             };
+            
             chat.messages.push(newMessage);
             await chat.save();
-    
-            // Correctly emit to both sender and receiver
-            const roomId = `${itemId}-${senderEmail}-${receiverEmail}`;
-            io.in(roomId).emit("receiveMessage", newMessage);
+
+            // Emit to the specific room instead of the itemId
+            io.to(roomId).emit("receiveMessage", newMessage);
         } catch (error) {
             console.error("Error handling message:", error);
             socket.emit("error", "Failed to save message");
         }
     });
-    
+
+    socket.on("disconnect", () => {
+        console.log("User disconnected:", socket.id);
+    });
 });
+
 
 
 

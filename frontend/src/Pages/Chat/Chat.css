@@ -16,11 +16,12 @@
   /* Chat History */
   .chat-history {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: hidden; /* Hide scrollbar */
     margin-bottom: 20px;
     padding-right: 10px; /* Prevent scrollbar from overlapping messages */
+    scroll-behavior: smooth; /* Allow smooth scrolling */
   }
-  
+
   .chat-history .message {
     margin-bottom: 15px;
     padding: 10px;
