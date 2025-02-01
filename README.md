@@ -22,13 +22,12 @@
 ### 📌 Prerequisites  
 Make sure you have the following installed on your system:  
 - **[Node.js](https://nodejs.org/)**  
-- **MongoDB** (running locally or using [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))  
-
+- **MongoDB** 
 ### 🚀 Steps to Run  
 
 #### 1️⃣ Clone the Repository  
 ```bash
-git clone https://github.com/your-username/lasthope.git
+git clone https://github.com/adithyakrishnapn/lasthope-project.git
 cd lasthope
 2️⃣ Set Up the Frontend
 
