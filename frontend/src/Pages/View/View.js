@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { data, useLocation, useNavigate } from 'react-router-dom';
 import './View.css'; // Keep the existing CSS
 import { AuthContext } from '../../Firebase/Authentication/AuthContext/AuthContext';
 import Chat from '../Chat/Chat'; // Import the Chat component
@@ -20,15 +20,17 @@ function View() {
             if (item?.userid) {
                 try {
                     console.log('Fetching receiver name for userId:', item.userid);
-
+                    console.log('item id is : ', item._id);
                     // Use fetch instead of axios to get the user info
                     const response = await fetch(`${process.env.REACT_APP_FETCH_USERID}?userId=${item.userid}`);
                     const data = await response.json();
 
                     console.log('User fetched from DB:', data); // Log the fetched user
+                    console.log('User Email:', data.email);
+                    console.log("The username is:", data.username);
                     setReceiverName(data.username);  // Assuming API returns the username
                     setReceiverEmail(data.email);
-                    console.log("The username is:", data.username);
+                    console.log("Dude check this out :", receiverEmail);
                 } catch (error) {
                     console.error('Error fetching receiver name:', error);
                 }
@@ -48,7 +50,7 @@ function View() {
         console.log("The receiver email:", receiverEmail);
         console.log("The item ID:", item._id);
 
-    }, [item, user]); // Re-run this effect when item or user changes
+    }, [item, user,receiverEmail]); // Re-run this effect when item or user changes
 
     if (!item) {
         return <p className="text-center text-gray-500">Item details not available.</p>;
@@ -93,12 +95,15 @@ function View() {
         <div className="view-container max-w-screen-lg mx-auto p-6">
             {showChat ? (
                 // Render Chat component when showChat is true
+                <>
+                {console.log('Chat Component Data:', { itemId: item._id, senderEmail, receiverEmail, receiverName })}
                 <Chat 
-                    itemId={item._id} 
+                    itemId={item._id}
                     senderEmail={senderEmail} 
                     receiverEmail={receiverEmail} 
                     receiverName={receiverName} 
                 />
+            </>
             ) : (
                 <div className="item-details-container bg-white rounded-lg shadow-lg p-6">
                     <div className="row">

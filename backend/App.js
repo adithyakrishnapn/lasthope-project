@@ -43,9 +43,10 @@ app.use("/api", userRouter);
 // Socket.IO functionality
 // In your backend server.js
 // In your server.js
+// In your socket.io handler (server.js)
 io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
-
+    
     socket.on("joinRoom", ({ roomId }) => {
         if (roomId) {
             console.log(`User ${socket.id} joined room: ${roomId}`);
@@ -53,50 +54,23 @@ io.on("connection", (socket) => {
             socket.emit("roomJoined", { roomId });
         }
     });
-
+    
     socket.on("sendMessage", async (messageData) => {
-        const { itemId, senderEmail, receiverEmail, message, timestamp, roomId } = messageData;
-
+        const { roomId } = messageData;
+        
         try {
-            let chat = await Chat.findOne({
-                itemId: itemId,
-                $or: [
-                    { senderEmail, receiverEmail },
-                    { senderEmail: receiverEmail, receiverEmail: senderEmail }
-                ]
-            });
-
-            if (!chat) {
-                chat = new Chat({
-                    senderEmail,
-                    receiverEmail,
-                    itemId,
-                    messages: []
-                });
-            }
-
-            const newMessage = {
-                senderEmail,
-                message,
-                timestamp: new Date(timestamp)
-            };
-            
-            chat.messages.push(newMessage);
-            await chat.save();
-
-            // Emit to the specific room instead of the itemId
-            io.to(roomId).emit("receiveMessage", newMessage);
+            // Emit to room immediately - the message is already saved by the API
+            io.to(roomId).emit("receiveMessage", messageData);
         } catch (error) {
             console.error("Error handling message:", error);
-            socket.emit("error", "Failed to save message");
+            socket.emit("error", "Failed to process message");
         }
     });
-
+    
     socket.on("disconnect", () => {
         console.log("User disconnected:", socket.id);
     });
 });
-
 
 
 
@@ -118,3 +92,5 @@ const PORT = 3001;
 server.listen(PORT, () => {
     console.log(`Server started on port ${PORT}`);
 });
+// At the end of your app.js, before module.exports
+module.exports = { app, io };

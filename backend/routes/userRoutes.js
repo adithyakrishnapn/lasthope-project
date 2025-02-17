@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const ObjectId = mongoose.Types.ObjectId;
 const nodemailer = require('nodemailer');
 const Chat = require('../models/chatModel'); // Import Chat model
+const { io } = require('../App'); // Import io from app.js
 
 // Middleware to parse request bodies
 router.use(bodyParser.json());
@@ -409,7 +410,6 @@ router.post("/create-chat", async (req, res) => {
           message: "Chat created successfully", 
           chat: savedChat 
       });
-      io.to(itemId.toString()).emit('receiveMessage', newMessage); // Emit message to all users in chat room
 
 
   } catch (error) {
@@ -425,42 +425,23 @@ router.post("/create-chat", async (req, res) => {
 // Fetch messages for a specific item
 router.get('/get-messages', async (req, res) => {
   const { itemId, senderEmail, receiverEmail } = req.query;
-
+  
   try {
-      // Validate query parameters
-      if (!itemId || !senderEmail || !receiverEmail) {
-          return res.status(400).json({ 
-              message: 'Missing required query parameters' 
-          });
-      }
-
-      console.log('Query Parameters:', { itemId, senderEmail, receiverEmail });
-
-      // Fetch all matching chat threads
       const chats = await Chat.find({
-          itemId: itemId, // Remove new ObjectId() as itemId is already a string
+          itemId,
           $or: [
               { senderEmail, receiverEmail },
               { senderEmail: receiverEmail, receiverEmail: senderEmail }
           ]
       });
-
-      // If no chats found, return empty messages array instead of 404
-      if (!chats || chats.length === 0) {
-          return res.status(200).json({ 
-              messages: [],
-              message: 'No messages found' 
-          });
-      }
-
+      
       const messages = chats.flatMap(chat => chat.messages)
           .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
+          
       res.status(200).json({ messages });
   } catch (error) {
-      console.error('Error fetching chats:', error);
       res.status(500).json({ 
-          message: 'Error fetching chats', 
+          message: 'Error fetching messages',
           error: error.message 
       });
   }
